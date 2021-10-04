@@ -1,11 +1,20 @@
-#name of vm to current directory
-vm_prefix = "k8s0"
-#number of vms
-vm_number = 3
-#ram
-vm_ram = 512
-#cpu
-vm_cpu = 1
+#name of vm for master nodes
+master_prefix = "k8s-m-0"
+#number of master vms
+master_number = 2
+#master ram
+master_memory = 1024
+#master cpu
+master_cpu = 2
+
+#name of vm for worker nodes
+worker_prefix = "k8s-w-0"
+#number of node vms
+nodes_number = 3
+#worker ram
+worker_ram = 512
+#worker cpu
+worker_cpu = 1
 
 Vagrant.configure("2") do |config|
 
@@ -17,17 +26,34 @@ Vagrant.configure("2") do |config|
 #   config.ssh.password = 'root'
 #   config.ssh.forward_x11 = true
 
-  (1..vm_number).each do |i|
-    config.vm.define vm_name = "#{vm_prefix}%01d" % i do |config|
-      config.vm.hostname = vm_name
+  # Kubernetes Master Server
+  (1..master_number).each do |i|
+    config.vm.define vm_name = "#{master_prefix}%01d" % i do |config|
+      # kmaster.vm.box = "bento/ubuntu-18.04"
+      config.vm.hostname = "#{master_prefix}#{i}"
+      config.vm.network "private_network", ip: "172.28.128.20#{i}"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "#{master_prefix}#{i}"
+        vb.memory = 2048
+        vb.cpus = 2
+      end
+      # kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
+    end
+  end
+
+  (1..nodes_number).each do |i|
+    config.vm.define vm_name = "#{worker_prefix}%01d" % i do |config|
+      config.vm.hostname = "#{worker_prefix}#{i}"
       config.vm.network "private_network", type: "dhcp"
       config.vm.provider :virtualbox do |vb|
         vb.gui = false
-        vb.name = vm_name
+        vb.name = "#{worker_prefix}#{i}"
         vb.linked_clone = false
         vb.memory = vm_ram
         vb.cpus = vm_cpu
       end
     end
   end
+
+  
 end
