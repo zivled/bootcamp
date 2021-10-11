@@ -18,18 +18,12 @@ master_cpu = 2
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = 'hashicorp/bionic64'
+  config.vm.box = 'bento/ubuntu-18.04'
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  # config.vm.provision "shell", run: "always", inline: "[ -f /etc/udev/rules.d/70-persistent-net.rules ] && rm -fr /etc/udev/rules.d/70-persistent-net.rules"
-
-#   config.ssh.username = 'root'
-#   config.ssh.password = 'root'
-#   config.ssh.forward_x11 = true
 
   # Kubernetes Master Server
   (1..master_number).each do |i|
     config.vm.define vm_name = "#{master_prefix}%01d" % i do |config|
-      # kmaster.vm.box = "bento/ubuntu-18.04"
       config.vm.hostname = "#{master_prefix}#{i}"
       config.vm.network "private_network", ip: "172.28.128.20#{i}"
       config.vm.provider "virtualbox" do |vb|
@@ -37,7 +31,7 @@ Vagrant.configure("2") do |config|
         vb.memory = master_ram
         vb.cpus = master_cpu
       end
-      config.vm.provision "shell", path: "bootstrap_kmaster.sh"
+      config.vm.provision "shell", path: "k8s_pre.sh"
     end
   end
 
@@ -45,7 +39,7 @@ Vagrant.configure("2") do |config|
     ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
     s.inline = <<-SHELL
       echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
-      echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+      # echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
     SHELL
   end
 
