@@ -1,0 +1,5 @@
+# Install a role from GitHub
+- name: ansible-role-docker
+  src: https://github.com/geerlingguy/ansible-role-docker
+- name: ansible-role-kubernetes
+  src: https://github.com/geerlingguy/ansible-role-kubernetes

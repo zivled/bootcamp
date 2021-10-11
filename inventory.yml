@@ -1,0 +1,6 @@
+# hard coded. change me
+[servers]
+172.28.128.201 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa
+172.28.128.202 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa
+172.28.128.203 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa
+# server3 ansible_host=172.28.128.203

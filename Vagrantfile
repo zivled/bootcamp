@@ -1,20 +1,20 @@
 #name of vm for master nodes
 master_prefix = "k8s-m-0"
 #number of master vms
-master_number = 2
+master_number = 3
 #master ram
-master_memory = 1024
+master_ram = 2048
 #master cpu
 master_cpu = 2
 
-#name of vm for worker nodes
-worker_prefix = "k8s-w-0"
-#number of node vms
-nodes_number = 3
-#worker ram
-worker_ram = 512
-#worker cpu
-worker_cpu = 1
+# #name of vm for worker nodes
+# worker_prefix = "k8s-w-0"
+# #number of node vms
+# nodes_number = 3
+# #worker ram
+# worker_ram = 512
+# #worker cpu
+# worker_cpu = 1
 
 Vagrant.configure("2") do |config|
 
@@ -34,26 +34,36 @@ Vagrant.configure("2") do |config|
       config.vm.network "private_network", ip: "172.28.128.20#{i}"
       config.vm.provider "virtualbox" do |vb|
         vb.name = "#{master_prefix}#{i}"
-        vb.memory = 2048
-        vb.cpus = 2
+        vb.memory = master_ram
+        vb.cpus = master_cpu
       end
-      # kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
+      config.vm.provision "shell", path: "bootstrap_kmaster.sh"
     end
   end
 
-  (1..nodes_number).each do |i|
-    config.vm.define vm_name = "#{worker_prefix}%01d" % i do |config|
-      config.vm.hostname = "#{worker_prefix}#{i}"
-      config.vm.network "private_network", type: "dhcp"
-      config.vm.provider :virtualbox do |vb|
-        vb.gui = false
-        vb.name = "#{worker_prefix}#{i}"
-        vb.linked_clone = false
-        vb.memory = vm_ram
-        vb.cpus = vm_cpu
-      end
-    end
+  config.vm.provision "shell" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+      echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+    SHELL
   end
 
-  
+  # (1..nodes_number).each do |i|
+  #   config.vm.define vm_name = "#{worker_prefix}%01d" % i do |config|
+  #     config.vm.hostname = "#{worker_prefix}#{i}"
+  #     config.vm.network "private_network", type: "dhcp"
+  #     config.vm.provider :virtualbox do |vb|
+  #       vb.gui = false
+  #       vb.name = "#{worker_prefix}#{i}"
+  #       vb.linked_clone = false
+  #       vb.memory = worker_ram
+  #       vb.cpus = worker_cpu
+  #     end
+  #     config.vm.provision "ansible" do |ansible|
+  #       ansible.playbook = "k8s_master_worker.yml"
+  #     end
+  #   end
+  # end
+
 end
