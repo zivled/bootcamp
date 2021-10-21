@@ -1,7 +1,7 @@
 # prefix for vms
 master_prefix = "k8s0"
 # number of vms
-vm_number = 2
+vm_number = 3
 # vm ram
 vm_ram = 2048
 # vm cpu
