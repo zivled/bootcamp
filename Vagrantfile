@@ -1,7 +1,7 @@
 #name of vm for master nodes
-master_prefix = "k8s-m-0"
+master_prefix = "k8s0"
 #number of master vms
-master_number = 3
+master_number = 2
 #master ram
 master_ram = 2048
 #master cpu
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
         vb.memory = master_ram
         vb.cpus = master_cpu
       end
-      config.vm.provision "shell", path: "k8s_pre.sh"
+      # config.vm.provision "shell", path: "k8s_pre.sh"
     end
   end
 

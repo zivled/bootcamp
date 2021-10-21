@@ -1,5 +1,7 @@
 #!/bin/bash
 
+######################################### delete me #########################33
+
 # Variable Declaration
 KUBERNETES_VERSION="1.19.15-00"
 
