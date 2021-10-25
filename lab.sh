@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # hard coded - change me
 vagrant up
 sshpass -f password.txt ssh-copy-id vagrant@172.28.128.201

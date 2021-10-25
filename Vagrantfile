@@ -24,6 +24,17 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define vm_name = "nfs" do |config|
+      config.vm.hostname = "nfs"
+      config.vm.network "private_network", ip: "172.28.128.100"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "nfs"
+        vb.memory = vm_ram
+        vb.cpus = vm_cpu
+      end
+      # config.vm.provision "shell", path: "nfs.sh"
+  end
+
   config.vm.provision "shell" do |s|
     ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
     s.inline = <<-SHELL
