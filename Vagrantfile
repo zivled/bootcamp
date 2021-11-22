@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       config.vm.network "private_network", ip: "172.28.128.100"
       config.vm.provider "virtualbox" do |vb|
         vb.name = "nfs"
-        vb.memory = vm_ram
+        vb.memory = 4096
         vb.cpus = vm_cpu
       end
       # config.vm.provision "shell", path: "nfs.sh"
